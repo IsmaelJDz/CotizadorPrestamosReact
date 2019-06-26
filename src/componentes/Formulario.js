@@ -9,6 +9,7 @@ class Formulario extends Component {
     };
 
     this.actualizarState = this.actualizarState.bind(this);
+    this.calcularPrestamo = this.calcularPrestamo.bind(this);
   }
 
   actualizarState(e) {
@@ -16,6 +17,7 @@ class Formulario extends Component {
     const { name, value } = e.target;
 
     this.setState({
+      //los datos vienen como numero pero en String y Number los pasa a NumeroEntero
       [name]: Number(value)
     });
 
@@ -31,11 +33,27 @@ class Formulario extends Component {
     // }
   }
 
+  habilitarSubmit() {
+    const { cantidad, plazo } = this.state;
+
+    const noValido = !cantidad || !plazo;
+
+    return noValido;
+  }
+
+  calcularPrestamo(e) {
+    e.preventDefault();
+
+    const { cantidad, plazo } = this.state;
+
+    this.props.data(cantidad, plazo);
+  }
+
   render() {
     const { cantidad, plazo } = this.state;
 
     return (
-      <form>
+      <form onSubmit={this.calcularPrestamo}>
         <div>
           <label htmlFor="prestamo">Cantidad Prestamo: {cantidad}</label>
           <input
@@ -62,6 +80,7 @@ class Formulario extends Component {
         </div>
         <div>
           <input
+            disabled={this.habilitarSubmit()}
             type="submit"
             value="Calcular"
             className="u-full-width button-primary"
